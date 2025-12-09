@@ -154,3 +154,50 @@ print('Our signature is :', S)
 Output:
 13480738404590090...
 ```
+
+## Factoring
+
+So far we've been using the product of small primes for the modulus, but small primes aren't much good for RSA as they can be factorised using [modern methods](https://en.wikipedia.org/wiki/Lenstra_elliptic-curve_factorization).
+
+What is a "small prime"? There was an [RSA Factoring Challenge](https://en.wikipedia.org/wiki/RSA_Factoring_Challenge) with cash prizes given to teams who could factorise RSA moduli. This gave insight to the public into how long various key sizes would remain safe. Computers get faster, algorithms get better, so in cryptography it's always prudent to err on the side of caution.
+
+These days, using primes that are at least 1024 bits long is recommended—multiplying two such 1024 primes gives you a modulus that is 2048 bits large. RSA with a 2048-bit modulus is called RSA-2048.
+
+Some say that to really remain future-proof you should use RSA-4096 or even RSA-8192. However, there is a tradeoff here; it takes longer to generate large prime numbers, plus modular exponentiations are predictably slower with a large modulus.
+
+Resources:
+  - [How big an RSA key is considered secure today?](https://crypto.stackexchange.com/questions/1978/how-big-an-rsa-key-is-considered-secure-today/1982#1982)
+  - [primefac-fork](https://github.com/elliptic-shiho/primefac-fork)
+
+Example :
+
+```bash
+python3 -m primefac 510143758735509025530880200653196460532653147
+510143758735509025530880200653196460532653147: 19704762736204164635843 25889363174021185185929
+```
+
+## Monoprime
+
+Resources:
+  - [Why do we need in RSA the modulus to be product of 2 primes?](https://crypto.stackexchange.com/questions/5170/why-do-we-need-in-rsa-the-modulus-to-be-product-of-2-primes)
+
+Example :
+
+```python
+from Crypto.Util.number import *
+
+N = 171731371218065444125482536302245915415603318380280392385291836472299752747934607246477508507827284075763910264995326010251268493630501989810855418416643352631102434317900028697993224868629935657273062472544675693365930943308086634291936846505861203914449338007760990051788980485462592823446469606824421932591                                                                  
+e = 65537
+C = 161367550346730604451454756189028938964941280347662098798775466019463375610700074840105776873791605070092554650190486030367121011578171525759600774739890458414593857709994072516290998135846956596662071379067305011746842247628316996977338024343628757374524136260758515864509435302781735938531030576289086798942  
+
+phi_N = N - 1 # Because n is prime
+
+d = pow(e, -1, phi_N)
+
+M = pow(C, d, N)
+
+print('The message is :', long_to_bytes(M).decode())
+
+Output :
+The message is : crypto{0n3_pr1m3_41n7_pr1m3_l0l}
+```
