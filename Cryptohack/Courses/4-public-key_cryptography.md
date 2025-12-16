@@ -207,11 +207,11 @@ The message is : crypto{0n3_pr1m3_41n7_pr1m3_l0l}
 Resources :
 - [The Elliptic Curve Factorization Method](https://doc.sagemath.org/html/en/reference/interfaces/sage/interfaces/ecm.html)
 
-Using `sage` to decompose our efzf, we get :
+Using `sage` to decompose our number `N`, we get :
 
 ```bash
 > sage
-> ecm.factor(Integer(5806...))
+sage: ecm.factor(Integer(5806...))
 [...] # Prime decomposition of N
 ```
 
