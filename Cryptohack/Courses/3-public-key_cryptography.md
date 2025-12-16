@@ -202,5 +202,92 @@ Output :
 The message is : crypto{0n3_pr1m3_41n7_pr1m3_l0l}
 ```
 
-# Manyprime
+## Manyprime
+
+Resources :
+- [The Elliptic Curve Factorization Method](https://doc.sagemath.org/html/en/reference/interfaces/sage/interfaces/ecm.html)
+
+Using `sage` to decompose our efzf, we get :
+
+```bash
+> sage
+> ecm.factor(Integer(5806...))
+[...] # Prime decomposition of N
+```
+
+We now use our decomposition to get our flag message :
+
+```python
+N = ...
+e = ...
+C = ...
+
+N_primes = [...]
+
+euler_phi_N = 1
+for i in range(len(N_primes)):
+	euler_phi_N *=  (N_primes[i] - 1)
+
+d = pow(e, -1, euler_phi_N)
+
+M = pow(C, d, N)
+print('The Message is :', long_to_bytes(M).decode())
+```
+
+## Salty
+
+Smallest exponent should be fastest, right?
+
+Weeeelllll, no.
+
+if `e = 1` then `d = 1`.
+
+So we can easily find the solution.
+
+## Modulus Inutilis
+
+My primes should be more than large enough now!
+
+If our number N is too long, then we can just calculate the nth root of unity :
+
+```python
+from Crypto.Util.number import *
+import gmpy2
+
+C = ...
+
+M = gmpy2.iroot(ct, 3)[0]
+print(long_to_bytes(M).decode())
+```
+
+And voila !
+
+## Working with Fields
+
+The set of integers modulo `N`, together with the operations of both addition and multiplication forms a ring `Z/NZ`. Fundamentally, this means that adding or multiplying any two elements in the set returns another element in the set.
+
+When the modulus is prime: `N=p`, we are additionally guaranteed a multiplicative inverse of every element in the set, and so the ring is promoted to a field. In particular, we refer to this field as a finite field denoted `Fp`​.
+
+The Diffie-Hellman protocol works with elements of some finite field `Fp`​, where the prime modulus is typically very large (thousands of bits), but for the following challenges we will keep numbers smaller for compactness.
+
+Example :
+
+Given the prime `p=991`, and the element `g=209`, find the inverse element `d=g^(−1)` such that `g⋅d mod 991 = 1`.
+
+```python
+from Crypto.Util.number import *
+
+g = 209
+p = 991
+d = inverse(g, p)
+
+print(d)
+
+Output :
+569
+```
+
+That's all !
+
+## Generators of Groups
 
